@@ -16,6 +16,10 @@ public class AdnController {
 
     @PostMapping("/mutante/")
     public ResponseEntity<Void> isMutant(@RequestBody Adn adn){
+        if (adn == null || adn.getAdn() == null) {  // Verifica si el objeto o su atributo es null
+            return ResponseEntity.badRequest().build();  // Devuelve un 400 Bad Request si adn es null
+        }
+
         if (adnService.isMutant(adn.getAdnArray())) {
             adnService.saveMutant(adn);
             // Si es mutante, devuelve HTTP 200 (OK)

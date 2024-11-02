@@ -22,6 +22,9 @@ public class Adn implements Serializable {
     @Column(name = "ADN")
     private String adn;
     public String[] getAdnArray() {
+        if (this.adn == null) {
+            return new String[0];  // Devuelve un array vacío si adn es null
+        }
         // Convierte el String a un array de String
         return adn.split(","); // Puedes usar un separador como coma
     }
