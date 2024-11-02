@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/")
 
@@ -16,8 +18,8 @@ public class AdnController {
 
     @PostMapping("/mutante/")
     public ResponseEntity<Void> isMutant(@RequestBody Adn adn){
-        if (adn == null || adn.getAdn() == null) {  // Verifica si el objeto o su atributo es null
-            return ResponseEntity.badRequest().build();  // Devuelve un 400 Bad Request si adn es null
+        if (adn == null || adn.getAdn() == null) {
+            return ResponseEntity.badRequest().build();
         }
 
         if (adnService.isMutant(adn.getAdnArray())) {
@@ -28,6 +30,11 @@ public class AdnController {
             // Si no es mutante, devuelve HTTP 403 (Forbidden)
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+    }
+
+    @GetMapping("/stats")
+    public Map<String, Object> getStatistics() {
+        return adnService.getStatistics();
     }
 
 }
