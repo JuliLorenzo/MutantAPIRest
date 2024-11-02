@@ -1,52 +1,57 @@
 package com.example.adnMutante.entities;
 
-import com.example.adnMutante.services.AdnServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.adnMutante.services.AdnService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class AdnServiceImplTest {
 
-    private AdnServiceImpl adnService;
+    @Autowired
+    private AdnService adnService; // Inyección del servicio
 
-    @BeforeEach
-    public void setUp() {
-        adnService = new AdnServiceImpl();
+    @Test
+    public void arrayVacio() {
+        String[] emptyArray = {};
+        boolean result = adnService.isMutant(emptyArray); // Llamar al método del servicio
+        assertFalse(result, "El ADN vacío no debe ser mutante.");
     }
 
     @Test
-    public void testArrayVacio() {
-        String[] adn = {};
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
+    public void arrayDeNxM() {
+        String[] nonSquareArray = { "AGTC", "GATC", "AT", "GCTA" };
+        boolean result = adnService.isMutant(nonSquareArray);
+        assertFalse(result, "El ADN de dimensiones NxM no debe ser mutante.");
     }
 
     @Test
-    public void testArrayDeNxM() {
-        String[] adn = {"AAGG", "TTCC", "GGAA", "CC"}; // Ejemplo de NxM
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
+    public void arrayConNumeros() {
+        String[] arrayWithNumbers = { "1234", "AGTC", "GATC", "ATGC" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertFalse(result, "El ADN que contiene números no debe ser mutante.");
     }
 
     @Test
-    public void testArrayConNumeros() {
-        String[] adn = {"A1C2", "TTCC", "GGAA", "CCAA"}; // Incluye números
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
+    public void arrayNull() {
+        String[] nullArray = null;
+        boolean result = adnService.isMutant(nullArray);
+        assertFalse(result, "El ADN nulo no debe ser mutante.");
     }
 
     @Test
-    public void testArrayNull() {
-        String[] adn = null;
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
+    public void arrayDeNulls() {
+        String[] arrayOfNulls = { null, null, null, null };
+        boolean result = adnService.isMutant(arrayOfNulls);
+        assertFalse(result, "El ADN que contiene solo nulls no debe ser mutante.");
     }
 
     @Test
-    public void testArrayDeNxNDeNulls() {
-        String[] adn = {null, null, null}; // Array de nulls
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
-    }
-
-    @Test
-    public void testArrayConLetrasInvalidas() {
-        String[] adn = {"ABCD", "HHHH", "AAAA", "CCCC"}; // Incluye letras no válidas
-        assertFalse(adnService.isMutant(adn), "El ADN no debe ser considerado mutante");
+    public void arrayConLetrasInvalidas() {
+        String[] arrayWithInvalidChars = { "ABCD", "EFGH", "IJKL", "MNOP" };
+        boolean result = adnService.isMutant(arrayWithInvalidChars);
+        assertFalse(result, "El ADN que contiene letras no válidas no debe ser mutante.");
     }
 }
