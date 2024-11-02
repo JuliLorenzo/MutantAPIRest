@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdnServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adnMutante</a> &gt; <a href="index.source.html" class="el_package">com.example.adnMutante.services</a> &gt; <span class="el_source">AdnServiceImpl.java</span></div><h1>AdnServiceImpl.java</h1><pre class="source lang-java linenums">package com.example.adnMutante.services;
+
+import com.example.adnMutante.entities.Adn;
+import com.example.adnMutante.repositories.AdnRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.Objects;
+
+import java.io.Serializable;
+import java.util.Arrays;
+
+@Service
+<span class="fc" id="L14">public class AdnServiceImpl implements AdnService&lt;Adn&gt; {</span>
+    @Autowired
+    AdnRepository adnRepository;
+
+    //Verifica que el Arreglo adn no sea null
+    public boolean adnNull(String[] adn){
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (adn == null){</span>
+<span class="fc" id="L21">            return true;</span>
+        }
+<span class="fc" id="L23">        return false;</span>
+    }
+
+    //Verifica que el Arreglo no este vacio y no contenga elementos null
+    public boolean adnNullControl(String[] adn){
+<span class="fc bfc" id="L28" title="All 4 branches covered.">        if (adn.length == 0 || Arrays.stream(adn).anyMatch(Objects::isNull)) {</span>
+<span class="fc" id="L29">            return true;</span>
+        }
+<span class="fc" id="L31">        return false;</span>
+    }
+
+    //Verifica que sea un Arreglo de N Strings cada uno de tamaño N
+    public boolean sizeConditions(String[] dna, Integer size){
+<span class="fc" id="L36">        boolean cumpleSize = Arrays.stream(dna)</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                .allMatch(s -&gt; s.length() == size);</span>
+<span class="fc" id="L38">        return cumpleSize;</span>
+    }
+
+    //Verifica que cada elemento del Arreglo sea alguna de las letras permitidas: 'A','G','C','T'
+    public boolean contentCondition(String[] adn) {
+        // Define un patrón de regex que solo acepta caracteres A, G, C o T.
+<span class="fc" id="L44">        String regex = &quot;^[AGCT]+$&quot;;</span>
+<span class="fc" id="L45">        return Arrays.stream(adn)</span>
+<span class="fc" id="L46">                .allMatch(s -&gt; s.matches(regex));</span>
+    }
+
+    //Armar matriz NxN
+    public char[][] armarMatriz(String[] dna, Integer size){
+<span class="fc" id="L51">        char[][] matriz = new char[size][];</span>
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for (int i = 0; i &lt; size; i++){</span>
+<span class="fc" id="L54">            matriz[i] = dna[i].toCharArray();</span>
+        }
+<span class="fc" id="L56">        return matriz;</span>
+    }
+    public boolean checkHorizontal(char[][] matriz) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (int i = 0; i &lt; matriz.length; i++) {</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">            for (int j = 0; j &lt;= matriz[i].length - 4; j++) { // Evitar desbordamiento</span>
+<span class="fc bfc" id="L61" title="All 6 branches covered.">                if (matriz[i][j] == matriz[i][j + 1] &amp;&amp;</span>
+                        matriz[i][j] == matriz[i][j + 2] &amp;&amp;
+                        matriz[i][j] == matriz[i][j + 3]) {
+
+                    // Comprobar que no haya más letras iguales en ambos lados
+<span class="fc" id="L66">                    boolean hasExtra = false;</span>
+<span class="pc bpc" id="L67" title="1 of 4 branches missed.">                    if (j &gt; 0 &amp;&amp; matriz[i][j] == matriz[i][j - 1]) { // Chequear a la izquierda</span>
+<span class="fc" id="L68">                        hasExtra = true;</span>
+                    }
+<span class="pc bpc" id="L70" title="1 of 4 branches missed.">                    if (j + 4 &lt; matriz[i].length &amp;&amp; matriz[i][j] == matriz[i][j + 4]) { // Chequear a la derecha</span>
+<span class="fc" id="L71">                        hasExtra = true;</span>
+                    }
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                    if (!hasExtra) {</span>
+<span class="fc" id="L75">                        return true; // Solo si tiene exactamente 4 iguales</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L80">        return false;</span>
+    }
+
+    public boolean checkVertical(char[][] matriz) {
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int j = 0; j &lt; matriz[0].length; j++) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            for (int i = 0; i &lt;= matriz.length - 4; i++) { // Evitar desbordamiento</span>
+<span class="fc bfc" id="L86" title="All 6 branches covered.">                if (matriz[i][j] == matriz[i + 1][j] &amp;&amp;</span>
+                        matriz[i][j] == matriz[i + 2][j] &amp;&amp;
+                        matriz[i][j] == matriz[i + 3][j]) {
+
+                    // Comprobar que no haya más letras iguales en ambos lados
+<span class="fc" id="L91">                    boolean hasExtra = false;</span>
+<span class="pc bpc" id="L92" title="3 of 4 branches missed.">                    if (i &gt; 0 &amp;&amp; matriz[i][j] == matriz[i - 1][j]) { // Chequear arriba</span>
+<span class="nc" id="L93">                        hasExtra = true;</span>
+                    }
+<span class="pc bpc" id="L95" title="3 of 4 branches missed.">                    if (i + 4 &lt; matriz.length &amp;&amp; matriz[i][j] == matriz[i + 4][j]) { // Chequear abajo</span>
+<span class="nc" id="L96">                        hasExtra = true;</span>
+                    }
+
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">                    if (!hasExtra) {</span>
+<span class="fc" id="L100">                        return true; // Solo si tiene exactamente 4 iguales</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L105">        return false;</span>
+    }
+
+    public boolean checkDiagonal(char[][] matriz) {
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        for (int i = 0; i &lt;= matriz.length - 4; i++) {</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            for (int j = 0; j &lt;= matriz[i].length - 4; j++) { // Evitar desbordamiento</span>
+<span class="pc bpc" id="L111" title="1 of 6 branches missed.">                if (matriz[i][j] == matriz[i + 1][j + 1] &amp;&amp;</span>
+                        matriz[i][j] == matriz[i + 2][j + 2] &amp;&amp;
+                        matriz[i][j] == matriz[i + 3][j + 3]) {
+
+                    // Comprobar que no haya más letras iguales en ambos lados
+<span class="fc" id="L116">                    boolean hasExtra = false;</span>
+<span class="pc bpc" id="L117" title="5 of 6 branches missed.">                    if (i &gt; 0 &amp;&amp; j &gt; 0 &amp;&amp; matriz[i][j] == matriz[i - 1][j - 1]) { // Chequear arriba izquierda</span>
+<span class="nc" id="L118">                        hasExtra = true;</span>
+                    }
+<span class="pc bpc" id="L120" title="5 of 6 branches missed.">                    if (i + 4 &lt; matriz.length &amp;&amp; j + 4 &lt; matriz[i].length &amp;&amp; matriz[i][j] == matriz[i + 4][j + 4]) { // Chequear abajo derecha</span>
+<span class="nc" id="L121">                        hasExtra = true;</span>
+                    }
+
+<span class="pc bpc" id="L124" title="1 of 2 branches missed.">                    if (!hasExtra) {</span>
+<span class="fc" id="L125">                        return true; // Solo si tiene exactamente 4 iguales</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L130">        return false;</span>
+    }
+
+    public boolean checkDiagonalInversa(char[][] matriz) {
+<span class="fc bfc" id="L134" title="All 2 branches covered.">        for (int i = 0; i &lt;= matriz.length - 4; i++) {</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            for (int j = 3; j &lt; matriz[i].length; j++) { // Evitar desbordamiento</span>
+<span class="fc bfc" id="L136" title="All 6 branches covered.">                if (matriz[i][j] == matriz[i + 1][j - 1] &amp;&amp;</span>
+                        matriz[i][j] == matriz[i + 2][j - 2] &amp;&amp;
+                        matriz[i][j] == matriz[i + 3][j - 3]) {
+
+                    // Comprobar que no haya más letras iguales en ambos lados
+<span class="fc" id="L141">                    boolean hasExtra = false;</span>
+<span class="pc bpc" id="L142" title="2 of 6 branches missed.">                    if (i &gt; 0 &amp;&amp; j &lt; matriz[i].length - 1 &amp;&amp; matriz[i][j] == matriz[i - 1][j + 1]) { // Chequear arriba derecha</span>
+<span class="fc" id="L143">                        hasExtra = true;</span>
+                    }
+<span class="pc bpc" id="L145" title="2 of 6 branches missed.">                    if (i + 4 &lt; matriz.length &amp;&amp; j - 4 &gt;= 0 &amp;&amp; matriz[i][j] == matriz[i + 4][j - 4]) { // Chequear abajo izquierda</span>
+<span class="fc" id="L146">                        hasExtra = true;</span>
+                    }
+
+<span class="fc bfc" id="L149" title="All 2 branches covered.">                    if (!hasExtra) {</span>
+<span class="fc" id="L150">                        return true; // Solo si tiene exactamente 4 iguales</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L155">        return false;</span>
+    }
+
+    // Control de condiciones
+    public boolean conditionControl(char[][] matriz) {
+<span class="fc bfc" id="L160" title="All 8 branches covered.">        return checkHorizontal(matriz) || checkVertical(matriz) || checkDiagonal(matriz) || checkDiagonalInversa(matriz);</span>
+    }
+
+    public boolean isMutant(String[] adn){
+        //String[] dna = dnaString.split(&quot;,&quot;);
+<span class="fc bfc" id="L165" title="All 4 branches covered.">        if (adnNull(adn) || adnNullControl(adn)){</span>
+<span class="fc" id="L166">            return false;</span>
+        }
+
+<span class="fc" id="L169">        int N = adn.length;</span>
+<span class="fc bfc" id="L170" title="All 4 branches covered.">        if (sizeConditions(adn, N) &amp;&amp; contentCondition(adn)){</span>
+<span class="fc" id="L171">            char[][] matriz = armarMatriz(adn, N);</span>
+<span class="fc" id="L172">            return conditionControl(matriz);</span>
+        }
+<span class="fc" id="L174">        return false;</span>
+    }
+
+    @Transactional
+    public void saveMutant(Adn adnMutante){
+<span class="nc" id="L179">        adnRepository.save(adnMutante);</span>
+<span class="nc" id="L180">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
