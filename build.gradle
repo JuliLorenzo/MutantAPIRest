@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
 }
 
 group = 'com.example'
@@ -40,12 +41,20 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	//Amazon AWS
-	implementation 'com.amazonaws:aws-lambda-java-core:1.2.1' // O la versión más reciente
-	implementation 'com.amazonaws:aws-lambda-java-events:3.11.0' // O la versión más reciente
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.8" // Specify the JaCoCo version
+}
+
+jacocoTestReport {
+	reports {
+	    xml.required = false // Disable XML report
+        csv.required = false // Disable CSV report
+        html.required = true // Enable HTML report
+	}
 }

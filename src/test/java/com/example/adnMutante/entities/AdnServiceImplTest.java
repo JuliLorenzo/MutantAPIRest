@@ -35,6 +35,48 @@ public class AdnServiceImplTest {
     }
 
     @Test
+    public void arrayMutanteHorizontal() {
+        String[] arrayWithNumbers = { "GGGGAA", "GAGTGC", "AGAAGG", "ACACTG", "ACACTG", "GAGTGC" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertTrue(result, "El ADN debe ser mutante.");
+    }
+
+    @Test
+    public void arrayNoMutanteHorizontalConExtra() {
+        String[] arrayWithNumbers = { "GGGGGA", "GAGTGC", "AGAAGG", "ACACTG", "ACACTG", "GAGTGC" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertFalse(result, "El ADN que contiene GGGGG no debe ser mutante.");
+    }
+
+    @Test
+    public void arrayMutanteVertical() {
+        String[] arrayWithNumbers = { "GAAT", "GAGT", "GGAA", "GCAC" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertTrue(result, "El ADN debe ser mutante.");
+    }
+
+    @Test
+    public void arrayMutanteDiagonal() {
+        String[] arrayWithNumbers = { "GAAT", "AGAT", "GCGC", "AGAG" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertTrue(result, "El ADN debe ser mutante.");
+    }
+
+    @Test
+    public void arrayMutanteDiagonalInversa() {
+        String[] arrayWithNumbers = { "GAAT", "GATG", "GTAA", "TCAC" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertTrue(result, "El ADN debe ser mutante.");
+    }
+
+    @Test
+    public void arrayNoMutanteDiagonalInversaConExtra() {
+        String[] arrayWithNumbers = { "GAAGT", "GAGTG", "GATAA", "TTCAC", "TAGCA" };
+        boolean result = adnService.isMutant(arrayWithNumbers);
+        assertFalse(result, "El ADN con diagonal inversa TTTTT no debe ser mutante.");
+    }
+
+    @Test
     public void arrayNull() {
         String[] nullArray = null;
         boolean result = adnService.isMutant(nullArray);
