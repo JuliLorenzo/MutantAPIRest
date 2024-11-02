@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -16,7 +18,7 @@ public class AdnServiceImplTest {
     @Test
     public void arrayVacio() {
         String[] emptyArray = {};
-        boolean result = adnService.isMutant(emptyArray); // Llamar al método del servicio
+        boolean result = adnService.isMutant(emptyArray);
         assertFalse(result, "El ADN vacío no debe ser mutante.");
     }
 
